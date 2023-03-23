@@ -1,0 +1,27 @@
+namespace FakeDataGenerator;
+
+public class TrustDetails
+{
+    public Contact TrustRelationshipManager { get; set; }
+    public Contact SfsoLead { get; set; }
+    public Contact MainContactAtTrust { get; set; }
+
+    public string Address { get; set; }
+    public string Website { get; set; }
+    public IEnumerable<string> LocalAuthorities { get; set; }
+    public string RegionsGroup { get; set; }
+    public string SchoolsFinancialSupportTerritory { get; set; }
+
+    public DateTime DateIncorporated { get; set; }
+    public DateTime DateOpened { get; set; }
+    public string TrustReferenceNumber { get; set; }
+    
+    public string CompaniesHouseNumber { get; set; }
+    public string CompaniesHouseFilingHistoryUrl { get; set; }
+    public string GetInformationAboutSchoolsUrl { get; set; }
+
+    public string SponsorStatus { get; set; }
+    public string SponsorRestrictions { get; set; }
+    public DateTime SponsorApprovalDate { get; set; }
+    public string SponsorName { get; set; }
+}
