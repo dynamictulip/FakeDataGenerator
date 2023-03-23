@@ -3,7 +3,7 @@ namespace FakeDataGenerator;
 //Data obtained from Chat GPT
 public class Data
 {
-    public static string[] AcademyNames { get; } =
+    public static string[] TrustNames { get; } =
     {
         "Academy Transformation Trust",
         "AET",

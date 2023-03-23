@@ -20,30 +20,33 @@ public static class Program
 
     private static Trust GenerateTrust()
     {
+        var random = new Faker();
+        var trustName = Data.TrustNames.First();
         var contactFaker = CreateContactFaker();
-        var trustDetailsFaker = CreateTrustDetailsFaker(contactFaker);
-        var trustFaker = CreateTrustFaker(trustDetailsFaker);
+        var trustDetailsFaker = CreateTrustDetailsFaker(contactFaker, trustName);
+        var trustFaker = CreateTrustFaker(trustDetailsFaker, trustName);
 
         return trustFaker.Generate();
     }
 
-    private static Faker<Trust> CreateTrustFaker(Faker<TrustDetails> trustDetailsFaker)
+    private static Faker<Trust> CreateTrustFaker(Faker<TrustDetails> trustDetailsFaker, string trustName)
     {
         var trustFaker = new Faker<Trust>("en_GB")
-            // .RuleFor(t => t.Name, f => $"{f.Company.CompanyName()} Academies Trust" );
-            // .RuleFor(t => t.Name, f => $"{f.Random.Word()} Academies Trust" );
+            .RuleFor(t => t.Name, trustName)
             .RuleFor(t => t.Uid, f => $"{f.Random.Int(1000, 9999)}")
             .RuleFor(t => t.TrustDetails, f => trustDetailsFaker.Generate());
         return trustFaker;
     }
 
-    private static Faker<TrustDetails> CreateTrustDetailsFaker(Faker<Contact> contactFaker)
+    private static Faker<TrustDetails> CreateTrustDetailsFaker(Faker<Contact> contactFaker, string trustName)
     {
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
+            // TODO: Trust relationship manager and SFSO lead need DfE email addresses
             .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate())
-            .RuleFor(td => td.SfsoLead, f => contactFaker.Generate("dfe contact"))
-            .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate());
-        //.RuleFor(td => td.Address, f => f.Address.CountryOfUnitedKingdom());
+            .RuleFor(td => td.SfsoLead, f => contactFaker.Generate())
+            .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
+            //.RuleFor(td => td.Address, f => f.Address.CountryOfUnitedKingdom());
+            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'","")}.co.uk");
         return trustDetailsFaker;
     }
 
