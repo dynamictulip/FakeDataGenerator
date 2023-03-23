@@ -15,13 +15,13 @@ public class TrustDetails
     public DateTime DateIncorporated { get; set; }
     public DateTime DateOpened { get; set; }
     public string TrustReferenceNumber { get; set; }
-    
+
     public string CompaniesHouseNumber { get; set; }
     public string CompaniesHouseFilingHistoryUrl { get; set; }
     public string GetInformationAboutSchoolsUrl { get; set; }
 
-    public string SponsorStatus { get; set; }
-    public string SponsorRestrictions { get; set; }
+    public string SponsorStatus => "Approved";
+    public string SponsorRestrictions => "No restrictions";
     public DateTime SponsorApprovalDate { get; set; }
     public string SponsorName { get; set; }
 }
