@@ -20,7 +20,6 @@ public static class Program
 
     private static Trust GenerateTrust()
     {
-        var random = new Faker();
         var trustName = Data.TrustNames.First();
         var contactFaker = CreateContactFaker();
         var trustDetailsFaker = CreateTrustDetailsFaker(contactFaker, trustName);
@@ -46,7 +45,8 @@ public static class Program
             .RuleFor(td => td.SfsoLead, f => contactFaker.Generate())
             .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
             //.RuleFor(td => td.Address, f => f.Address.CountryOfUnitedKingdom());
-            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'","")}.co.uk");
+            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'","")}.co.uk")
+            .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities,f.Random.Int(1,3)));
         return trustDetailsFaker;
     }
 
