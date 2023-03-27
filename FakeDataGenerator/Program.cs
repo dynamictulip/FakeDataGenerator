@@ -12,8 +12,15 @@ public static class Program
         //The randomizer seed enables us to generate repeatable data sets
         Randomizer.Seed = new Random(28698);
         var fakeTrust = GenerateTrust();
+        
+        var serializeOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
 
-        var jsonisisedTrust = JsonSerializer.Serialize(fakeTrust);
+        var jsonisisedTrust = JsonSerializer.Serialize(fakeTrust, serializeOptions);
+        
         Console.WriteLine(jsonisisedTrust);
         File.WriteAllText("output.json", jsonisisedTrust);
     }
@@ -39,6 +46,9 @@ public static class Program
 
     private static Faker<TrustDetails> CreateTrustDetailsFaker(Faker<Contact> contactFaker, string trustName)
     {
+        
+
+
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             // TODO: Trust relationship manager and SFSO lead need DfE email addresses
             .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate())
