@@ -13,7 +13,9 @@ public class TrustDetails
     public string SchoolsFinancialSupportTerritory => "Yorkshire and the Humber";
 
     public DateTime DateIncorporated { get; set; }
+    public string DateIncorporatedString { get; set; }
     public DateTime DateOpened { get; set; }
+    public string DateOpenedString { get; set; }
     public string TrustReferenceNumber { get; set; }
 
     public string CompaniesHouseNumber { get; set; }
@@ -23,5 +25,6 @@ public class TrustDetails
     public string SponsorStatus => "Approved";
     public string SponsorRestrictions => "No restrictions";
     public DateTime SponsorApprovalDate { get; set; }
+    public string SponsorApprovalDateString { get; set; }
     public string SponsorName { get; set; }
 }
