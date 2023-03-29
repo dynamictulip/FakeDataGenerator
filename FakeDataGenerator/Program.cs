@@ -46,17 +46,17 @@ public static class Program
 
     private static Faker<TrustDetails> CreateTrustDetailsFaker(Faker<Contact> contactFaker, string trustName)
     {
-        
-
+        var faker = new Faker("en_GB");
+        IEnumerable<string> localAuthorities = faker.PickRandom(Data.LocalAuthorities, faker.Random.Int(1, 3));
 
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             // TODO: Trust relationship manager and SFSO lead need DfE email addresses
             .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate())
             .RuleFor(td => td.SfsoLead, f => contactFaker.Generate())
             .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
-            //.RuleFor(td => td.Address, f => f.Address.CountryOfUnitedKingdom());
-            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'","")}.co.uk")
-            .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities,f.Random.Int(1,3)));
+            .RuleFor(td => td.Address, f => $"{f.Address.StreetName()}, {localAuthorities.First()}, {f.Address.ZipCode()}")
+            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'", "")}.co.uk")
+            .RuleFor(td => td.LocalAuthorities, f => localAuthorities);
         return trustDetailsFaker;
     }
 
