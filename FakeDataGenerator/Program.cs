@@ -48,6 +48,8 @@ public static class Program
     {
         var faker = new Faker("en_GB");
         IEnumerable<string> localAuthorities = faker.PickRandom(Data.LocalAuthorities, faker.Random.Int(1, 3));
+        DateTime dateIncorporated = faker.Date.Past(10);
+        string companiesHouseNumber = faker.Random.Int(min: 1100000, max: 09999999).ToString("D8");
 
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             // TODO: Trust relationship manager and SFSO lead need DfE email addresses
@@ -56,7 +58,16 @@ public static class Program
             .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
             .RuleFor(td => td.Address, f => $"{f.Address.StreetName()}, {localAuthorities.First()}, {f.Address.ZipCode()}")
             .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'", "")}.co.uk")
-            .RuleFor(td => td.LocalAuthorities, f => localAuthorities);
+            .RuleFor(td => td.LocalAuthorities, f => localAuthorities)
+            .RuleFor(td => td.DateIncorporated, f => dateIncorporated)
+            .RuleFor(td => td.DateOpened,
+                f => f.Date.Between(dateIncorporated, DateTime.Now))
+            .RuleFor(td => td.TrustReferenceNumber, f => $"TR{f.Random.Int(min: 0, max: 9999)}")
+            .RuleFor(td => td.CompaniesHouseNumber, companiesHouseNumber)
+            .RuleFor(td => td.CompaniesHouseFilingHistoryUrl,
+                $"https://find-and-update.company-information.service.gov.uk/company/{companiesHouseNumber}/filing-history")
+            .RuleFor(td => td.SponsorApprovalDate, f => f.Date.Past(5))
+            .RuleFor(td => td.SponsorName, f => f.PickRandom(Data.TrustNames));
         return trustDetailsFaker;
     }
 
