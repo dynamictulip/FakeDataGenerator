@@ -5,6 +5,8 @@ namespace FakeDataGenerator;
 
 public static class Program
 {
+    private static readonly Faker GeneralFaker = new("en_GB");
+    
     public static void Main()
     {
         Console.WriteLine("Hello, awesome world!");
@@ -36,10 +38,12 @@ public static class Program
 
     private static Faker<Trust> CreateTrustFaker(Faker<TrustDetails> trustDetailsFaker, string trustName)
     {
+        var governanceFaker = CreateGovernanceFaker(trustName);
         var trustFaker = new Faker<Trust>("en_GB")
             .RuleFor(t => t.Name, trustName)
             .RuleFor(t => t.Uid, f => $"{f.Random.Int(1000, 9999)}")
-            .RuleFor(t => t.TrustDetails, f => trustDetailsFaker.Generate());
+            .RuleFor(t => t.TrustDetails, f => trustDetailsFaker.Generate())
+            .RuleFor(t => t.Governance, governanceFaker.Generate());
         return trustFaker;
     }
 
@@ -81,4 +85,45 @@ public static class Program
             .RuleFor(c => c.Telephone, f => f.Person.Phone);
         return contactFaker;
     }
+
+    private static Faker<Governance> CreateGovernanceFaker(string trustName)
+    {
+        List<Contact> presentGovernors = new()
+        {
+            CreateGovernorFaker(trustName, "Accounting Officer", true).Generate(),
+            CreateGovernorFaker(trustName, "Chair of Trustees", true).Generate(),
+            CreateGovernorFaker(trustName, "Chief Financial Officer", true).Generate()
+        };
+        presentGovernors.AddRange(CreateGovernorFaker(trustName,"Trustee", true).Generate(GeneralFaker.Random.Int(3,10)));
+
+        List<Contact> members = new();
+        members.AddRange(CreateGovernorFaker(trustName, "Member", true).Generate(GeneralFaker.Random.Int(3, 5)));
+        
+        List<Contact> past = new()
+        {
+            CreateGovernorFaker(trustName, "Accounting Officer", false).Generate(),
+            CreateGovernorFaker(trustName, "Chair of Trustees", false).Generate(),
+            CreateGovernorFaker(trustName, "Chief Financial Officer", false).Generate()
+        };
+        past.AddRange(CreateGovernorFaker(trustName,"Trustee", false).Generate(GeneralFaker.Random.Int(3,15)));
+        
+        var governanceFaker = new Faker<Governance>()
+            .RuleFor(g => g.Present, presentGovernors)
+            .RuleFor(g => g.Members, members)
+            .RuleFor(g => g.Past, past);
+        
+        return governanceFaker;
+    }
+
+    private static Faker<Contact> CreateGovernorFaker(string trustName, string role, bool isCurrent)
+    {
+        var dateAppointed = isCurrent ? GeneralFaker.Date.Past(2) : GeneralFaker.Date.Past(10);
+        var governorFaker = CreateContactFaker(trustName)
+            .RuleFor(c => c.Role, role)
+            .RuleFor(c => c.DateAppointed, dateAppointed)
+            .RuleFor(c => c.TermEnd,
+            f => isCurrent ? GeneralFaker.Date.Future(2) : GeneralFaker.Date.Between(dateAppointed, DateTime.Now));
+        return governorFaker;
+    }
+
 }
