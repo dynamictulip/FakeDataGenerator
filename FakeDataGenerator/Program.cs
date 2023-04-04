@@ -51,10 +51,10 @@ public static class Program
     {
         var trustContactFaker = CreateContactFaker(trustName);
         var internalContactFaker = CreateContactFaker(trustName,true);
-        var faker = new Faker("en_GB");
-        IEnumerable<string> localAuthorities = faker.PickRandom(Data.LocalAuthorities, faker.Random.Int(1, 3));
-        DateTime dateIncorporated = faker.Date.Past(10);
-        string companiesHouseNumber = faker.Random.Int(min: 1100000, max: 09999999).ToString("D8");
+        
+        IEnumerable<string> localAuthorities = GeneralFaker.PickRandom(Data.LocalAuthorities, GeneralFaker.Random.Int(1, 3));
+        DateTime dateIncorporated = GeneralFaker.Date.Past(10);
+        string companiesHouseNumber = GeneralFaker.Random.Int(min: 1100000, max: 09999999).ToString("D8");
 
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             // TODO: Trust relationship manager and SFSO lead need DfE email addresses
