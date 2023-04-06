@@ -28,8 +28,7 @@ public static class Program
     private static Trust GenerateTrust()
     {
         var trustName = Data.TrustNames.First();
-        var contactFaker = CreateContactFaker();
-        var trustDetailsFaker = CreateTrustDetailsFaker(contactFaker, trustName);
+        var trustDetailsFaker = CreateTrustDetailsFaker(trustName);
         var trustFaker = CreateTrustFaker(trustDetailsFaker, trustName);
 
         return trustFaker.Generate();
@@ -44,27 +43,41 @@ public static class Program
         return trustFaker;
     }
 
-    private static Faker<TrustDetails> CreateTrustDetailsFaker(Faker<Contact> contactFaker, string trustName)
+    private static Faker<TrustDetails> CreateTrustDetailsFaker(string trustName)
     {
-        
-
+        var trustContactFaker = CreateContactFaker(trustName);
+        var internalContactFaker = CreateContactFaker(trustName,true);
+        var faker = new Faker("en_GB");
+        IEnumerable<string> localAuthorities = faker.PickRandom(Data.LocalAuthorities, faker.Random.Int(1, 3));
+        DateTime dateIncorporated = faker.Date.Past(10);
+        string companiesHouseNumber = faker.Random.Int(min: 1100000, max: 09999999).ToString("D8");
 
         var trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             // TODO: Trust relationship manager and SFSO lead need DfE email addresses
-            .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate())
-            .RuleFor(td => td.SfsoLead, f => contactFaker.Generate())
-            .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
-            //.RuleFor(td => td.Address, f => f.Address.CountryOfUnitedKingdom());
-            .RuleFor(td => td.Website, $"https://www.{trustName.ToLower().Replace(" ", "").Replace("'","")}.co.uk")
-            .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities,f.Random.Int(1,3)));
+            .RuleFor(td => td.TrustRelationshipManager, f => internalContactFaker.Generate())
+            .RuleFor(td => td.SfsoLead, f => internalContactFaker.Generate())
+            .RuleFor(td => td.MainContactAtTrust, f => trustContactFaker.Generate())
+            .RuleFor(td => td.Address, f => $"{f.Address.StreetName()}, {localAuthorities.First()}, {f.Address.ZipCode()}")
+            .RuleFor(td => td.Website, $"https://www.{Helper.GetDomain(trustName)}")
+            .RuleFor(td => td.LocalAuthorities, f => localAuthorities)
+            .RuleFor(td => td.DateIncorporated, f => dateIncorporated)
+            .RuleFor(td => td.DateOpened,
+                f => f.Date.Between(dateIncorporated, DateTime.Now))
+            .RuleFor(td => td.TrustReferenceNumber, f => $"TR{f.Random.Int(min: 0, max: 9999)}")
+            .RuleFor(td => td.CompaniesHouseNumber, companiesHouseNumber)
+            .RuleFor(td => td.CompaniesHouseFilingHistoryUrl,
+                $"https://find-and-update.company-information.service.gov.uk/company/{companiesHouseNumber}/filing-history")
+            .RuleFor(td => td.SponsorApprovalDate, f => f.Date.Past(5))
+            .RuleFor(td => td.SponsorName, f => f.PickRandom(Data.TrustNames));
         return trustDetailsFaker;
     }
-
-    private static Faker<Contact> CreateContactFaker()
+    
+    private static Faker<Contact> CreateContactFaker(string trustName, bool isInternal = false)
     {
+        string domain = isInternal ? "education.gov.uk" : $"{Helper.GetDomain(trustName)}";
         var contactFaker = new Faker<Contact>("en_GB")
             .RuleFor(c => c.Name, f => f.Person.FullName)
-            .RuleFor(c => c.Email, f => f.Person.Email)
+            .RuleFor(c => c.Email, f => $"{f.Person.FirstName}.{f.Person.LastName}@{domain}")
             .RuleFor(c => c.Telephone, f => f.Person.Phone);
         return contactFaker;
     }

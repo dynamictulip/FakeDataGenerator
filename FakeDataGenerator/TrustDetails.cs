@@ -9,8 +9,8 @@ public class TrustDetails
     public string Address { get; set; }
     public string Website { get; set; }
     public IEnumerable<string> LocalAuthorities { get; set; }
-    public string RegionsGroup { get; set; }
-    public string SchoolsFinancialSupportTerritory { get; set; }
+    public string RegionsGroup => "Yorkshire and the Humber";
+    public string SchoolsFinancialSupportTerritory => "Yorkshire and the Humber";
 
     public DateTime DateIncorporated { get; set; }
     public DateTime DateOpened { get; set; }
