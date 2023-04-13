@@ -1,4 +1,4 @@
-namespace FakeDataGenerator;
+namespace FakeDataGenerator.Model;
 
 public class TrustDetails
 {

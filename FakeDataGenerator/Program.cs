@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Bogus;
+using FakeDataGenerator.Model;
 
 namespace FakeDataGenerator;
 
