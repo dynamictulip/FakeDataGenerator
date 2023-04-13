@@ -7,4 +7,5 @@ public class Trust
     public string TrustType => "Multi-academy trust";
 
     public TrustDetails TrustDetails { get; set; }
+    public Governance Governance { get; set; }
 }
