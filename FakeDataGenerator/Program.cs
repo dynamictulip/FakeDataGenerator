@@ -32,8 +32,9 @@ public static class Program
     private static Trust GenerateTrust(string trustName)
     {
         var trustDetailsFaker = new TrustDetailsFaker(GeneralFaker, trustName);
-        var trustFaker = new TrustFaker(trustDetailsFaker, new GovernanceFaker(GeneralFaker, trustName), trustName);
-
+        var academyFaker = new AcademyFaker();
+        var trustFaker = new TrustFaker(trustDetailsFaker, new GovernanceFaker(GeneralFaker, trustName), academyFaker, trustName);
+        
         return trustFaker.Generate();
     }
 }

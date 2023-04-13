@@ -5,8 +5,8 @@ public class Academy
     public string Name { get; set; }
     public string LocalAuthority { get; set; }
     public string Phase { get; set; }
-    public int MinAge { get; set; }
-    public int MaxAge { get; set; }
+    public int MinPupilAge { get; set; }
+    public int MaxPupilAge { get; set; }
     public int Capacity { get; set; }
     public int PupilNumbers { get; set; }
     public DateTime DateJoined { get; set; }
