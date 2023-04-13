@@ -1,16 +1,40 @@
-using Bogus;
 using FakeDataGenerator.Model;
 
 namespace FakeDataGenerator.Fakers;
 
 public class GovernorFaker : ContactFaker
 {
-    public GovernorFaker(Faker generalFaker, string trustName, string role, bool isCurrent) : base(trustName)
+    public GovernorFaker(string trustName, bool isCurrent) : base(trustName)
     {
-        var dateAppointed = isCurrent ? generalFaker.Date.Past(2) : generalFaker.Date.Past(10);
-        _contactFaker.RuleFor(c => c.Role, role)
-            .RuleFor(c => c.DateAppointed, dateAppointed)
+        _contactFaker
+            .RuleFor(c => c.DateAppointed, f => isCurrent ? f.Date.Past(2) : f.Date.Past(10))
             .RuleFor(c => c.TermEnd,
-                f => isCurrent ? generalFaker.Date.Future(2) : generalFaker.Date.Between(dateAppointed, DateTime.Now));
+                (f, c) => isCurrent ? f.Date.Future(2) : f.Date.Between(c.DateAppointed, DateTime.Now));
+    }
+
+    public Contact Generate(string role)
+    {
+        var contact = base.Generate();
+        contact.Role = role;
+        return contact;
+    }
+
+    public IEnumerable<Contact> Generate(string role, int num)
+    {
+        return base.Generate(num).Select(c =>
+        {
+            c.Role = role;
+            return c;
+        });
+    }
+
+    public override IEnumerable<Contact> Generate(int num, bool isInternal = false)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override Contact Generate(bool isInternal = false)
+    {
+        throw new NotSupportedException();
     }
 }

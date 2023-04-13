@@ -7,22 +7,27 @@ public class ContactFaker
 {
     protected readonly Faker<Contact> _contactFaker;
 
-    public ContactFaker(string trustName, bool isInternal = false)
+    public ContactFaker(string trustName)
     {
-        var domain = isInternal ? "education.gov.uk" : $"{Helper.GetDomain(trustName)}";
         _contactFaker = new Faker<Contact>("en_GB")
             .RuleFor(c => c.Name, f => f.Person.FullName)
-            .RuleFor(c => c.Email, f => $"{f.Person.FirstName}.{f.Person.LastName}@{domain}")
-            .RuleFor(c => c.Telephone, f => f.Person.Phone);
+            .RuleFor(c => c.Telephone, f => f.Person.Phone)
+            .RuleSet("isInternal",
+                set => set.RuleFor(c => c.Email, f => $"{f.Person.FirstName}.{f.Person.LastName}@education.gov.uk"))
+            .RuleSet("isExternal",
+                set => set.RuleFor(c => c.Email,
+                    f => $"{f.Person.FirstName}.{f.Person.LastName}@{Helper.GetDomain(trustName)}"));
     }
 
-    public Contact Generate()
+    public virtual Contact Generate(bool isInternal = false)
     {
-        return _contactFaker.Generate();
+        var ruleSets = $"default, {(isInternal ? "isInternal" : "isExternal")}";
+        return _contactFaker.Generate(ruleSets);
     }
 
-    public IEnumerable<Contact> Generate(int num)
+    public virtual IEnumerable<Contact> Generate(int num, bool isInternal = false)
     {
-        return _contactFaker.Generate(num);
+        var ruleSets = $"default, {(isInternal ? "isInternal" : "isExternal")}";
+        return _contactFaker.Generate(num, ruleSets);
     }
 }

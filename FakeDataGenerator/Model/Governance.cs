@@ -2,8 +2,7 @@ namespace FakeDataGenerator.Model;
 
 public class Governance
 {
-    public string CompaniesHouseUrl { get; set; }
-    public IList<Contact> Present { get; set; }
-    public IList<Contact> Members { get; set; }
-    public IList<Contact> Past { get; set; }
+    public IEnumerable<Contact> Present { get; set; }
+    public IEnumerable<Contact> Members { get; set; }
+    public IEnumerable<Contact> Past { get; set; }
 }

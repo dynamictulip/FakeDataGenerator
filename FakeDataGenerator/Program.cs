@@ -7,8 +7,6 @@ namespace FakeDataGenerator;
 
 public static class Program
 {
-    private static readonly Faker GeneralFaker = new("en_GB");
-
     public static void Main()
     {
         Console.WriteLine("Hello, awesome world!");
@@ -31,10 +29,12 @@ public static class Program
 
     private static Trust GenerateTrust(string trustName)
     {
-        var trustDetailsFaker = new TrustDetailsFaker(GeneralFaker, trustName);
+        var trustDetailsFaker = new TrustDetailsFaker(trustName, new ContactFaker(trustName));
         var academyFaker = new AcademyFaker();
-        var trustFaker = new TrustFaker(trustDetailsFaker, new GovernanceFaker(GeneralFaker, trustName), academyFaker, trustName);
-        
+        var governanceFaker = new GovernanceFaker(new GovernorFaker(trustName, false),
+            new GovernorFaker(trustName, true));
+        var trustFaker = new TrustFaker(trustDetailsFaker, governanceFaker, academyFaker, trustName);
+
         return trustFaker.Generate();
     }
 }
