@@ -37,8 +37,8 @@ public class AcademyFaker
         return name;
     }
 
-    public Academy Generate()
+    public IEnumerable<Academy> Generate(int num)
     {
-        return _academyFaker.Generate();
+        return _academyFaker.Generate(num);
     }
 }
