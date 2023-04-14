@@ -12,7 +12,6 @@ public class TrustDetailsFaker
         _trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate(true))
             .RuleFor(td => td.SfsoLead, f => contactFaker.Generate(true))
-            .RuleFor(td => td.MainContactAtTrust, f => contactFaker.Generate())
             .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities, f.Random.Int(1, 3)))
             .RuleFor(td => td.Address,
                 (f, td) => $"{f.Address.StreetName()}, {td.LocalAuthorities.First()}, {f.Address.ZipCode()}")
@@ -28,8 +27,10 @@ public class TrustDetailsFaker
             .RuleFor(td => td.SponsorName, f => f.PickRandom(Data.TrustNames));
     }
 
-    public TrustDetails Generate()
+    public TrustDetails Generate(Contact mainContactAtTrust)
     {
-        return _trustDetailsFaker.Generate();
+        var trustDetails = _trustDetailsFaker.Generate();
+        trustDetails.MainContactAtTrust = mainContactAtTrust;
+        return trustDetails;
     }
 }
