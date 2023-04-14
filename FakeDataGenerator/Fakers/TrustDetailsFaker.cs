@@ -7,7 +7,7 @@ public class TrustDetailsFaker
 {
     private readonly Faker<TrustDetails> _trustDetailsFaker;
 
-    public TrustDetailsFaker(string trustName, InternalContactFaker internalContactFaker)
+    public TrustDetailsFaker(InternalContactFaker internalContactFaker, string trustWebDomain)
     {
         _trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             .RuleFor(td => td.TrustRelationshipManager, f => internalContactFaker.Generate())
@@ -15,7 +15,7 @@ public class TrustDetailsFaker
             .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities, f.Random.Int(1, 3)))
             .RuleFor(td => td.Address,
                 (f, td) => $"{f.Address.StreetName()}, {td.LocalAuthorities.First()}, {f.Address.ZipCode()}")
-            .RuleFor(td => td.Website, $"https://www.{Helper.GetDomain(trustName)}")
+            .RuleFor(td => td.Website, $"https://www.{trustWebDomain}")
             .RuleFor(td => td.DateIncorporated, f => f.Date.Past(10))
             .RuleFor(td => td.DateOpened,
                 (f, td) => f.Date.Between(td.DateIncorporated, DateTime.Now))

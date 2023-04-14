@@ -4,11 +4,11 @@ namespace FakeDataGenerator.Fakers;
 
 public class GovernorContactFaker : ContactFaker
 {
-    public GovernorContactFaker(string trustName, bool isCurrent)
+    public GovernorContactFaker(bool isCurrent, string trustWebDomain)
     {
         _contactFaker
             .RuleFor(c => c.Email,
-                f => $"{f.Person.FirstName}.{f.Person.LastName}@{Helper.GetDomain(trustName)}")
+                f => $"{f.Person.FirstName}.{f.Person.LastName}@{trustWebDomain}")
             .RuleFor(c => c.DateAppointed, f => isCurrent ? f.Date.Past(2) : f.Date.Past(10))
             .RuleFor(c => c.TermEnd,
                 (f, c) => isCurrent ? f.Date.Future(2) : f.Date.Between(c.DateAppointed, DateTime.Now));
