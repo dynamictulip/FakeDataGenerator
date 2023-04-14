@@ -6,11 +6,12 @@ namespace FakeDataGenerator.Fakers;
 public class AcademyFaker
 {
     private readonly Faker<Academy> _academyFaker;
+    private List<string> _localAuthorities = new();
 
     public AcademyFaker()
     {
         _academyFaker = new Faker<Academy>("en_GB")
-            .RuleFor(a => a.LocalAuthority, f => f.PickRandom(Data.LocalAuthorities))
+            .RuleFor(a => a.LocalAuthority, f => f.PickRandom(_localAuthorities))
             .RuleFor(a => a.Phase, f => f.PickRandom("Primary", "Secondary"))
             .RuleFor(a => a.MinPupilAge, (f, a) => a.Phase == "Primary"? f.PickRandom(4,5) : 11)
             .RuleFor(a => a.MaxPupilAge, (f, a) => a.Phase == "Primary"? 11 : f.PickRandom(16,18))
@@ -35,6 +36,12 @@ public class AcademyFaker
         name = $"{name} {f.PickRandom("School", "Academy")}";
 
         return name;
+    }
+
+    public AcademyFaker SetLocalAuthorities(IEnumerable<string> localAuthorities)
+    {
+        _localAuthorities = localAuthorities.ToList();
+        return this;
     }
 
     public IEnumerable<Academy> Generate(int num)
