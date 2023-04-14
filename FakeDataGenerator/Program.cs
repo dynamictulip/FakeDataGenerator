@@ -29,10 +29,12 @@ public static class Program
 
     private static Trust GenerateTrust(string trustName)
     {
-        var trustDetailsFaker = new TrustDetailsFaker(trustName, new ContactFaker(trustName));
+        var internalContactFaker = new InternalContactFaker();
         var academyFaker = new AcademyFaker();
-        var governanceFaker = new GovernanceFaker(new GovernorFaker(trustName, false),
-            new GovernorFaker(trustName, true));
+        var pastGovernorContactFaker = new GovernorContactFaker(trustName, false);
+        var currentGovernorContactFaker = new GovernorContactFaker(trustName, true);
+        var governanceFaker = new GovernanceFaker(pastGovernorContactFaker, currentGovernorContactFaker);
+        var trustDetailsFaker = new TrustDetailsFaker(trustName, internalContactFaker);
         var trustFaker = new TrustFaker(trustDetailsFaker, governanceFaker, academyFaker, trustName);
 
         return trustFaker.Generate();

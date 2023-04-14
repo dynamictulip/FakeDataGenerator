@@ -7,11 +7,11 @@ public class TrustDetailsFaker
 {
     private readonly Faker<TrustDetails> _trustDetailsFaker;
 
-    public TrustDetailsFaker(string trustName, ContactFaker contactFaker)
+    public TrustDetailsFaker(string trustName, InternalContactFaker internalContactFaker)
     {
         _trustDetailsFaker = new Faker<TrustDetails>("en_GB")
-            .RuleFor(td => td.TrustRelationshipManager, f => contactFaker.Generate(true))
-            .RuleFor(td => td.SfsoLead, f => contactFaker.Generate(true))
+            .RuleFor(td => td.TrustRelationshipManager, f => internalContactFaker.Generate())
+            .RuleFor(td => td.SfsoLead, f => internalContactFaker.Generate())
             .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities, f.Random.Int(1, 3)))
             .RuleFor(td => td.Address,
                 (f, td) => $"{f.Address.StreetName()}, {td.LocalAuthorities.First()}, {f.Address.ZipCode()}")
