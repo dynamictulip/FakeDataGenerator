@@ -8,4 +8,6 @@ public class Trust
 
     public TrustDetails TrustDetails { get; set; }
     public Governance Governance { get; set; }
+    
+    public AcademiesInTrust AcademiesInTrust { get; set; }
 }
