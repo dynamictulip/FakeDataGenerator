@@ -6,7 +6,7 @@ namespace FakeDataGenerator.Fakers;
 public class AcademyFaker
 {
     private readonly Faker<Academy> _academyFaker;
-    private List<string> _localAuthorities = new();
+    private IEnumerable<string> _localAuthorities;
 
     public AcademyFaker()
     {
@@ -40,7 +40,7 @@ public class AcademyFaker
 
     public AcademyFaker SetLocalAuthorities(IEnumerable<string> localAuthorities)
     {
-        _localAuthorities = localAuthorities.ToList();
+        _localAuthorities = localAuthorities;
         return this;
     }
 
