@@ -5,36 +5,40 @@ namespace FakeDataGenerator.Fakers;
 
 public class GovernanceFaker
 {
+    private readonly GovernorContactFaker _currentGovernorContactFaker;
     private readonly Faker<Governance> _governanceFaker;
+    private readonly GovernorContactFaker _pastGovernorContactFaker;
 
-    public GovernanceFaker(Faker generalFaker, string trustName)
+    public GovernanceFaker(GovernorContactFaker pastGovernorContactFaker,
+        GovernorContactFaker currentGovernorContactFaker)
     {
-        List<Contact> presentGovernors = new()
+        _currentGovernorContactFaker = currentGovernorContactFaker;
+        _pastGovernorContactFaker = pastGovernorContactFaker;
+
+        _governanceFaker = new Faker<Governance>("en_GB")
+            .RuleFor(g => g.Present, GenerateCurrentGovernors)
+            .RuleFor(g => g.Members, f => _currentGovernorContactFaker.Generate("Member", f.Random.Int(3, 5)))
+            .RuleFor(g => g.Past, GeneratePastGovernors);
+    }
+
+    private IEnumerable<Contact> GeneratePastGovernors(Faker f)
+    {
+        return new[]
         {
-            new GovernorFaker(generalFaker, trustName, "Accounting Officer", true).Generate(),
-            new GovernorFaker(generalFaker, trustName, "Chair of Trustees", true).Generate(),
-            new GovernorFaker(generalFaker, trustName, "Chief Financial Officer", true).Generate()
-        };
-        presentGovernors.AddRange(new GovernorFaker(generalFaker, trustName, "Trustee", true)
-            .Generate(generalFaker.Random.Int(3, 10)));
+            _pastGovernorContactFaker.Generate("Accounting Officer"),
+            _pastGovernorContactFaker.Generate("Chair of Trustees"),
+            _pastGovernorContactFaker.Generate("Chief Financial Officer")
+        }.Concat(_pastGovernorContactFaker.Generate("Trustee", f.Random.Int(3, 15)));
+    }
 
-        List<Contact> members = new();
-        members.AddRange(
-            new GovernorFaker(generalFaker, trustName, "Member", true).Generate(generalFaker.Random.Int(3, 5)));
-
-        List<Contact> past = new()
+    private IEnumerable<Contact> GenerateCurrentGovernors(Faker f)
+    {
+        return new[]
         {
-            new GovernorFaker(generalFaker, trustName, "Accounting Officer", false).Generate(),
-            new GovernorFaker(generalFaker, trustName, "Chair of Trustees", false).Generate(),
-            new GovernorFaker(generalFaker, trustName, "Chief Financial Officer", false).Generate()
-        };
-        past.AddRange(
-            new GovernorFaker(generalFaker, trustName, "Trustee", false).Generate(generalFaker.Random.Int(3, 15)));
-
-        _governanceFaker = new Faker<Governance>()
-            .RuleFor(g => g.Present, presentGovernors)
-            .RuleFor(g => g.Members, members)
-            .RuleFor(g => g.Past, past);
+            _currentGovernorContactFaker.Generate("Accounting Officer"),
+            _currentGovernorContactFaker.Generate("Chair of Trustees"),
+            _currentGovernorContactFaker.Generate("Chief Financial Officer")
+        }.Concat(_currentGovernorContactFaker.Generate("Trustee", f.Random.Int(3, 10)));
     }
 
     public Governance Generate()
