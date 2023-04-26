@@ -13,7 +13,7 @@ public static class Program
         //The randomizer seed enables us to generate repeatable data sets
         Randomizer.Seed = new Random(28698);
 
-        var fakeTrusts = Data.TrustNames.Select(GenerateTrust);
+        var fakeTrusts = Data.TrustNames.Select(GenerateTrust).OrderBy(trust => trust.Name);
 
         var serializeOptions = new JsonSerializerOptions
         {
