@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 using Bogus;
+using CsvHelper;
 using FakeDataGenerator.Fakers;
 using FakeDataGenerator.Model;
 
@@ -25,6 +27,13 @@ public static class Program
 
         Console.WriteLine(jsonisisedTrusts);
         File.WriteAllText("output.json", jsonisisedTrusts);
+
+        var cvsisedTrusts = from trust in fakeTrusts
+                                                    select new { trust.Name, trust.TrustDetails.Address };
+        
+        using var writer = new StreamWriter("trusts.csv");
+        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csv.WriteRecords(cvsisedTrusts);
     }
 
     private static Trust GenerateTrust(string trustName)
