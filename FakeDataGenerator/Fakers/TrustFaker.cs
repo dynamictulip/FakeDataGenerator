@@ -1,4 +1,5 @@
 using Bogus;
+using FakeDataGenerator.Helpers;
 using FakeDataGenerator.Model;
 
 namespace FakeDataGenerator.Fakers;
@@ -8,10 +9,10 @@ public class TrustFaker
     private readonly Faker<Trust> _trustFaker;
 
     public TrustFaker(TrustDetailsFaker trustDetailsFaker, GovernanceFaker governanceFaker, AcademyFaker academyFaker,
-        string trustName)
+        TrustToGenerate trustToGenerate)
     {
         _trustFaker = new Faker<Trust>("en_GB")
-            .RuleFor(t => t.Name, trustName)
+            .RuleFor(t => t.Name, trustToGenerate.Name)
             .RuleFor(t => t.Uid, f => $"{f.Random.Int(1000, 9999)}")
             .RuleFor(t => t.Governance, governanceFaker.Generate())
             .RuleFor(t => t.TrustDetails, (f, t) =>

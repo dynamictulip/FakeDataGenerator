@@ -7,7 +7,8 @@ public class TrustDetailsFaker
 {
     private readonly Faker<TrustDetails> _trustDetailsFaker;
 
-    public TrustDetailsFaker(InternalContactFaker internalContactFaker, string trustWebDomain)
+    public TrustDetailsFaker(InternalContactFaker internalContactFaker, IEnumerable<string> sponsors,
+        string trustWebDomain)
     {
         _trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             .RuleFor(td => td.TrustRelationshipManager, f => internalContactFaker.Generate())
@@ -24,7 +25,7 @@ public class TrustDetailsFaker
             .RuleFor(td => td.CompaniesHouseFilingHistoryUrl, (f, td) =>
                 $"https://find-and-update.company-information.service.gov.uk/company/{td.CompaniesHouseNumber}/filing-history")
             .RuleFor(td => td.SponsorApprovalDate, f => f.Date.Past(5))
-            .RuleFor(td => td.SponsorName, f => f.PickRandom(Data.TrustNames));
+            .RuleFor(td => td.SponsorName, f => f.PickRandom(sponsors));
     }
 
     public TrustDetails Generate(Contact mainContactAtTrust)
