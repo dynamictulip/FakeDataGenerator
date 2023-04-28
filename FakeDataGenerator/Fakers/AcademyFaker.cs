@@ -12,10 +12,25 @@ public class AcademyFaker
     {
         _academyFaker = new Faker<Academy>("en_GB")
             .RuleFor(a => a.LocalAuthority, f => f.PickRandom(_localAuthorities))
-            .RuleFor(a => a.Phase, f => f.PickRandom("Primary", "Secondary"))
-            .RuleFor(a => a.MinPupilAge, (f, a) => a.Phase == "Primary"? f.PickRandom(4,5) : 11)
-            .RuleFor(a => a.MaxPupilAge, (f, a) => a.Phase == "Primary"? 11 : f.PickRandom(16,18))
-            .RuleFor(a => a.Name, GenerateSchoolName)
+            .RuleSet("randomSchoolName", set =>
+            {
+                set.RuleFor(a => a.Phase, f => f.PickRandom("Primary", "Secondary"))
+                    .RuleFor(a => a.Name, GenerateSchoolName)
+                    .RuleFor(a => a.MinPupilAge, (f, a) => a.Phase == "Primary" ? f.PickRandom(4, 5) : 11)
+                    .RuleFor(a => a.MaxPupilAge, (f, a) => a.Phase == "Primary" ? 11 : f.PickRandom(16, 18));
+            })
+            .RuleSet("definedSchoolName",
+                set =>
+                {
+                    set.RuleFor(a => a.Phase,
+                            (f, a) => a.Name.Contains("Primary", StringComparison.CurrentCultureIgnoreCase)
+                                ? "Primary"
+                                : a.Name.Contains("Secondary", StringComparison.CurrentCultureIgnoreCase)
+                                    ? "Secondary"
+                                    : f.PickRandom("Primary", "Secondary"))
+                        .RuleFor(a => a.MinPupilAge, (f, a) => a.Phase == "Primary" ? f.PickRandom(4, 5) : 11)
+                        .RuleFor(a => a.MaxPupilAge, (f, a) => a.Phase == "Primary" ? 11 : f.PickRandom(16, 18));
+                })
             .RuleFor(a => a.Capacity, f => f.Random.Int(100, 3000))
             .RuleFor(a => a.PupilNumbers, (f, a) => (int)Math.Round(a.Capacity * f.Random.Double(0.4, 1.3)))
             .RuleFor(a => a.DateJoined, f => f.Date.Past())
@@ -29,7 +44,7 @@ public class AcademyFaker
     {
         var name = f.PickRandom(Data.Schools.Concat(new[] { a.LocalAuthority, f.Address.StreetName() }));
         if (name.StartsWith("st", StringComparison.InvariantCultureIgnoreCase) || f.Random.Bool())
-            name = $"{name} {f.PickRandom("Church of England", "CofE", "Catholic", "C of E", "R.C.")}";
+            name = $"{name} {f.PickRandom("Church of England", "Cofe", "CE", "Catholic", "C of E", "R.C.")}";
 
         if (f.Random.Bool())
             name = $"{name} {a.Phase}";
@@ -46,6 +61,15 @@ public class AcademyFaker
 
     public IEnumerable<Academy> Generate(int num)
     {
-        return _academyFaker.Generate(num);
+        return _academyFaker.Generate(num, "default,randomSchoolName");
+    }
+
+    public IEnumerable<Academy> Generate(IEnumerable<string> schools)
+    {
+        return schools.Select(n =>
+        {
+            _academyFaker.RuleFor(a => a.Name, n);
+            return _academyFaker.Generate("default,definedSchoolName");
+        });
     }
 }
