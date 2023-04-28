@@ -1,4 +1,5 @@
 using Bogus;
+using FakeDataGenerator.Helpers;
 using FakeDataGenerator.Model;
 
 namespace FakeDataGenerator.Fakers;
@@ -8,15 +9,28 @@ public class TrustFaker
     private readonly Faker<Trust> _trustFaker;
 
     public TrustFaker(TrustDetailsFaker trustDetailsFaker, GovernanceFaker governanceFaker, AcademyFaker academyFaker,
-        string trustName)
+        TrustToGenerate trustToGenerate)
     {
         _trustFaker = new Faker<Trust>("en_GB")
-            .RuleFor(t => t.Name, trustName)
+            .RuleFor(t => t.Name, trustToGenerate.Name)
             .RuleFor(t => t.Uid, f => $"{f.Random.Int(1000, 9999)}")
+            .RuleFor(t => t.TrustType,
+                () => trustToGenerate.TrustType == TrustType.MultiAcademyTrust
+                    ? "Multi-academy trust"
+                    : "Single-academy trust")
             .RuleFor(t => t.Governance, governanceFaker.Generate())
             .RuleFor(t => t.TrustDetails, (f, t) =>
-                trustDetailsFaker.Generate(f.PickRandom(t.Governance.Present.Where(g => g.Role != "Trustee"))))
-            .RuleFor(t => t.AcademiesInTrust, (f, t) => new AcademiesInTrust
+                trustDetailsFaker.Generate(f.PickRandom(t.Governance.Present.Where(g => g.Role != "Trustee"))));
+
+        if (trustToGenerate.Schools.Any())
+            _trustFaker.RuleFor(t => t.AcademiesInTrust, (f, t) => new AcademiesInTrust
+            {
+                Academies = academyFaker
+                    .SetLocalAuthorities(t.TrustDetails.LocalAuthorities)
+                    .Generate(trustToGenerate.Schools)
+            });
+        else
+            _trustFaker.RuleFor(t => t.AcademiesInTrust, (f, t) => new AcademiesInTrust
             {
                 Academies = academyFaker
                     .SetLocalAuthorities(t.TrustDetails.LocalAuthorities)

@@ -1,4 +1,4 @@
-namespace FakeDataGenerator;
+namespace FakeDataGenerator.Helpers;
 
 public static class Helper
 {
