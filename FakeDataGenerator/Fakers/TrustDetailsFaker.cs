@@ -6,16 +6,20 @@ namespace FakeDataGenerator.Fakers;
 public class TrustDetailsFaker
 {
     private readonly Faker<TrustDetails> _trustDetailsFaker;
+    private readonly IEnumerable<string> _localAuthorities;
 
     public TrustDetailsFaker(InternalContactFaker internalContactFaker, IEnumerable<string> sponsors,
         string trustWebDomain)
     {
+        var generalFaker = new Faker();
+        _localAuthorities = generalFaker.PickRandom(Data.LocalAuthorities, generalFaker.Random.Int(1, 3)).ToArray();
+        
         _trustDetailsFaker = new Faker<TrustDetails>("en_GB")
             .RuleFor(td => td.TrustRelationshipManager, f => internalContactFaker.Generate())
             .RuleFor(td => td.SfsoLead, f => internalContactFaker.Generate())
-            .RuleFor(td => td.LocalAuthorities, f => f.PickRandom(Data.LocalAuthorities, f.Random.Int(1, 3)))
+            .RuleFor(td => td.LocalAuthorities, f => _localAuthorities)
             .RuleFor(td => td.Address,
-                (f, td) => $"{f.Address.StreetName()}, {td.LocalAuthorities.First()}, {f.Address.ZipCode()}")
+                (f, td) => $"{f.Address.StreetName()}, {_localAuthorities.First()}, {f.Address.ZipCode()}")
             .RuleFor(td => td.Website, $"https://www.{trustWebDomain}")
             .RuleFor(td => td.DateIncorporated, f => f.Date.Past(10))
             .RuleFor(td => td.DateOpened,
