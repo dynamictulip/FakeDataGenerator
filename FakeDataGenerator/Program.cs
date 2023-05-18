@@ -27,7 +27,7 @@ public static class Program
 
     private static void CvsifyTrusts(Trust[] fakeTrusts)
     {
-        var cvsisedTrusts = fakeTrusts.Select(trust => new { trust.Name, trust.TrustDetails.Address });
+        var cvsisedTrusts = fakeTrusts.Select(trust => new CsvRowOutput(trust));
 
         var outputFileName = "trusts.csv";
         using var writer = new StreamWriter(outputFileName);
