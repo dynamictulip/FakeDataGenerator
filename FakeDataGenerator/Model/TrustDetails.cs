@@ -15,6 +15,7 @@ public class TrustDetails
     public DateTime DateIncorporated { get; set; }
     public DateTime DateOpened { get; set; }
     public string TrustReferenceNumber { get; set; }
+    public string Ukprn { get; set; }
 
     public string CompaniesHouseNumber { get; set; }
     public string CompaniesHouseFilingHistoryUrl { get; set; }
