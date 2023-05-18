@@ -21,7 +21,7 @@ public class TrustDetailsFaker
             .RuleFor(td => td.DateOpened,
                 (f, td) => f.Date.Between(td.DateIncorporated, DateTime.Now))
             .RuleFor(td => td.TrustReferenceNumber, f => $"TR{f.Random.Int(0, 9999)}")
-            .RuleFor(td => td.Ukprn, f => $"100{f.Random.Int(0,99999).ToString("D5")}" )
+            .RuleFor(td => td.Ukprn, f => $"100{f.Random.Int(0,99999):D5}" )
             .RuleFor(td => td.CompaniesHouseNumber, f => f.Random.Int(1100000, 09999999).ToString("D8"))
             .RuleFor(td => td.CompaniesHouseFilingHistoryUrl, (f, td) =>
                 $"https://find-and-update.company-information.service.gov.uk/company/{td.CompaniesHouseNumber}/filing-history")
