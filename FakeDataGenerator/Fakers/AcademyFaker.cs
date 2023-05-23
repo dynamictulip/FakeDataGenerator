@@ -33,7 +33,7 @@ public class AcademyFaker
                 })
             .RuleFor(a => a.Capacity, f => f.Random.Int(100, 3000))
             .RuleFor(a => a.PupilNumbers, (f, a) => (int)Math.Round(a.Capacity * f.Random.Double(0.4, 1.3)))
-            .RuleFor(a => a.DateJoined, f => f.Date.Past())
+            .RuleFor(a => a.DateJoined, f => f.Date.Past(8))
             .RuleFor(a => a.CurrentOfstedRating, f => f.PickRandom(Data.OfstedRatings))
             .RuleFor(a => a.CurrentOfstedRatingDate, f => f.Date.Past(4))
             .RuleFor(a => a.PreviousOfstedRating, f => f.PickRandom(Data.OfstedRatings))
