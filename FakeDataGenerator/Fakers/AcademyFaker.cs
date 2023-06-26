@@ -31,6 +31,7 @@ public class AcademyFaker
                         .RuleFor(a => a.MinPupilAge, (f, a) => a.Phase == "Primary" ? f.PickRandom(4, 5) : 11)
                         .RuleFor(a => a.MaxPupilAge, (f, a) => a.Phase == "Primary" ? 11 : f.PickRandom(16, 18));
                 })
+            .RuleFor(a => a.Type, f => f.PickRandom("Academy sponsor led", "Academy converter", "Free school"))
             .RuleFor(a => a.Capacity, f => f.Random.Int(100, 3000))
             .RuleFor(a => a.PupilNumbers, (f, a) => (int)Math.Round(a.Capacity * f.Random.Double(0.4, 1.3)))
             .RuleFor(a => a.DateJoined, f => f.Date.Past(8))
