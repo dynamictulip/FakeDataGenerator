@@ -29,9 +29,9 @@ public class GovernanceFaker
     {
         return new[]
         {
-            _pastGovernorContactFaker.Generate("Accounting Officer"),
-            _pastGovernorContactFaker.Generate("Chair of Trustees"),
-            _pastGovernorContactFaker.Generate("Chief Financial Officer")
+            _pastGovernorContactFaker.Generate("Accounting officer"),
+            _pastGovernorContactFaker.Generate("Chair of trustees"),
+            _pastGovernorContactFaker.Generate("Chief financial officer")
         }.Concat(_pastGovernorContactFaker.Generate("Trustee", f.Random.Int(3, 15))).ToArray();
     }
 
@@ -39,9 +39,9 @@ public class GovernanceFaker
     {
         return new[]
         {
-            _currentGovernorContactFaker.Generate("Accounting Officer"),
-            _currentGovernorContactFaker.Generate("Chair of Trustees"),
-            _currentGovernorContactFaker.Generate("Chief Financial Officer")
+            _currentGovernorContactFaker.Generate("Accounting officer"),
+            _currentGovernorContactFaker.Generate("Chair of trustees"),
+            _currentGovernorContactFaker.Generate("Chief financial officer")
         };
     }
 
