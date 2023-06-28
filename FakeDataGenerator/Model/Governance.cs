@@ -7,4 +7,6 @@ public class Governance
     public IEnumerable<Contact> Past { get; set; }
     public IEnumerable<Contact> TrustManagement { get; set; }
     public IEnumerable<Contact> Trustees { get; set; }
+    
+    public IEnumerable<Contact> PastTwelveMonths { get; set; }
 }

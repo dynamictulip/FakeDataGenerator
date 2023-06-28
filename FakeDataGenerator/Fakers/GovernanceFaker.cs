@@ -8,10 +8,12 @@ public class GovernanceFaker
     private readonly GovernorContactFaker _currentGovernorContactFaker;
     private readonly Faker<Governance> _governanceFaker;
     private readonly GovernorContactFaker _pastGovernorContactFaker;
+    private readonly DateTime _dateOneYearAgo;
 
     public GovernanceFaker(GovernorContactFaker pastGovernorContactFaker,
         GovernorContactFaker currentGovernorContactFaker)
     {
+        _dateOneYearAgo = DateTime.Now.AddYears(-1);
         _currentGovernorContactFaker = currentGovernorContactFaker;
         _pastGovernorContactFaker = pastGovernorContactFaker;
 
@@ -30,7 +32,7 @@ public class GovernanceFaker
             _pastGovernorContactFaker.Generate("Accounting Officer"),
             _pastGovernorContactFaker.Generate("Chair of Trustees"),
             _pastGovernorContactFaker.Generate("Chief Financial Officer")
-        }.Concat(_pastGovernorContactFaker.Generate("Trustee", f.Random.Int(3, 15)));
+        }.Concat(_pastGovernorContactFaker.Generate("Trustee", f.Random.Int(3, 15))).ToArray();
     }
 
     private IEnumerable<Contact> GenerateTrustManagement()
@@ -55,6 +57,8 @@ public class GovernanceFaker
 
     public Governance Generate()
     {
-        return _governanceFaker.Generate();
+        var governance = _governanceFaker.Generate();
+        governance.PastTwelveMonths = governance.Past.Where(g => g.TermEnd > _dateOneYearAgo).ToArray();
+        return governance;
     }
 }
