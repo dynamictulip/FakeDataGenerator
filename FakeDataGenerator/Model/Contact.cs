@@ -8,4 +8,5 @@ public class Contact
     public string Role { get; set; }
     public DateTime DateAppointed { get; set; }
     public DateTime TermEnd { get; set; }
+    public string AppointmentType { get; set; }
 }
