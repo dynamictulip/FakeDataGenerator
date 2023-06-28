@@ -59,6 +59,30 @@ public class GovernanceFaker
     {
         var governance = _governanceFaker.Generate();
         governance.PastTwelveMonths = governance.Past.Where(g => g.TermEnd > _dateOneYearAgo).ToArray();
+        governance.Turnover = CalculateTurnover(governance);
         return governance;
+    }
+
+    private int CalculateTurnover(Governance governance)
+    {
+        var averageEmployees = CalculateAverageEmployees(governance);
+        var employeesLeft = governance.PastTwelveMonths.Count();
+        var turnover = (int)((double)employeesLeft / averageEmployees * 100);
+        return turnover;
+    }
+
+    private int CalculateAverageEmployees(Governance governance)
+    {
+        var employeeCountOneYearAgo = CountAppointedBeforeLastYear(governance.TrustManagement) +
+                                       CountAppointedBeforeLastYear(governance.Trustees) +
+                                       CountAppointedBeforeLastYear(governance.Members) +
+                                       governance.PastTwelveMonths.Count();
+        var totalCurrentCount = governance.TrustManagement.Count() + governance.Trustees.Count() + governance.Members.Count();
+        return (employeeCountOneYearAgo + totalCurrentCount) / 2;
+    }
+
+    private int CountAppointedBeforeLastYear(IEnumerable<Contact> contacts)
+    {
+        return contacts.Count(i => i.DateAppointed < _dateOneYearAgo);
     }
 }
