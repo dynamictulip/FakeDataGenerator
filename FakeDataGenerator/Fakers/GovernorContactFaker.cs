@@ -11,7 +11,8 @@ public class GovernorContactFaker : ContactFaker
                 f => $"{f.Person.FirstName}.{f.Person.LastName}@{trustWebDomain}")
             .RuleFor(c => c.DateAppointed, f => isCurrent ? f.Date.Past(2) : f.Date.Past(10))
             .RuleFor(c => c.TermEnd,
-                (f, c) => isCurrent ? f.Date.Future(2) : f.Date.Between(c.DateAppointed, DateTime.Now));
+                (f, c) => isCurrent ? f.Date.Future(2) : f.Date.Between(c.DateAppointed, DateTime.Now))
+            .RuleFor(c=> c.AppointmentType, f => f.PickRandom(Data.AppointmentType));
     }
 
     public Contact Generate(string role)

@@ -159,4 +159,12 @@ public static class Data
         "Queen Elizabeth's",
         "Queensbridge"
     };
+
+    public static string[] AppointmentType { get; } =
+    {
+        "Elected by parents",
+        "Appointed by local authority",
+        "Appointed by academy members",
+        "Appointed by GB/board"
+    };
 }
