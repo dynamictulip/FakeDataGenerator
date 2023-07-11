@@ -15,4 +15,10 @@ public class Academy
     public DateTime CurrentOfstedRatingDate { get; set; }
     public string PreviousOfstedRating { get; set; }
     public DateTime PreviousOfstedRatingDate { get; set; }
+    
+    public int SenPupilsPercentage { get; set;  }
+    
+    public int EnglishAsAnAdditionalLangPercentage { get; set; }
+    
+    public int FreeSchoolMealsPercentage { get; set; }
 }

@@ -38,7 +38,10 @@ public class AcademyFaker
             .RuleFor(a => a.CurrentOfstedRating, f => f.PickRandom(Data.OfstedRatings))
             .RuleFor(a => a.CurrentOfstedRatingDate, f => f.Date.Past(4))
             .RuleFor(a => a.PreviousOfstedRating, f => f.PickRandom(Data.OfstedRatings))
-            .RuleFor(a => a.PreviousOfstedRatingDate, (f, a) => f.Date.Past(9, a.CurrentOfstedRatingDate));
+            .RuleFor(a => a.PreviousOfstedRatingDate, (f, a) => f.Date.Past(9, a.CurrentOfstedRatingDate))
+            .RuleFor(a => a.SenPupilsPercentage, (f => f.Random.Int(1, 10)))
+            .RuleFor(a => a.EnglishAsAnAdditionalLangPercentage, (f => f.Random.Int(1,10)))
+            .RuleFor(a => a.FreeSchoolMealsPercentage, f => f.Random.Int(1, 30));
     }
 
     private static string GenerateSchoolName(Faker f, Academy a)
