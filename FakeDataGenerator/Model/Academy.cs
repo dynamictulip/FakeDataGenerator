@@ -3,7 +3,9 @@ namespace FakeDataGenerator.Model;
 public class Academy
 {
     public string Name { get; set; }
+    public string Urn { get; set; }
     public string Type { get; set; }
+    public string RuralOrUrban { get; set; }
     public string LocalAuthority { get; set; }
     public string Phase { get; set; }
     public int MinPupilAge { get; set; }
